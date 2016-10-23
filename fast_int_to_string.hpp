@@ -117,7 +117,7 @@ uint32_t fast_uint64_to_string(uint64_t val, char *p) {
 FILE_SCOPE
 std::string fast_uint64_to_string(uint64_t val) {
     if (0 == val)
-        return std::move(std::string("0"));
+        return std::string("0");
 
     const uint32_t size = log10_characterstic(val);
     std::string s(size+1, '\0');
@@ -134,7 +134,7 @@ std::string fast_uint64_to_string(uint64_t val) {
     if (val)
         *p = '0' + val;
 
-    return std::move(s);
+    return s;
 }
 
 #endif // _FAST_INT_TO_STRING_
