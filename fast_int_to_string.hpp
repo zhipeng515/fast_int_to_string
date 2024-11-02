@@ -1,4 +1,3 @@
-
 #ifndef _FAST_INT_TO_STRING_
 #define _FAST_INT_TO_STRING_
 
@@ -29,13 +28,20 @@ const char digits_in_ascii[] = {
 FILE_SCOPE
 inline
 uint32_t count_leading_zeros(uint64_t x) {
-#ifdef __x86_64__
-    if (0 == x)
-        return 64;
+#ifdef __ARM_ARCH
+    // For ARM architecture, use ARM-specific built-in function if available
+    return __builtin_clzll(x);
+#elif defined(__x86_64__) || defined(_M_X64)
+    // For x86_64 platforms, use GCC/Clang built-in function
     return __builtin_clzll(x);
 #else
-    // TODO: Leverage loop un-rolled version of 'counting leading zeros'
-    #error "Builtin intrinisic is not defined on this platform"
+    // Generic fallback: Count leading zeros using a manual loop
+    uint32_t count = 0;
+    while (!(x & 0x8000000000000000)) {
+        count++;
+        x <<= 1;
+    }
+    return count;
 #endif
 }
 
